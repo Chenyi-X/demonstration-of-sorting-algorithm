@@ -1,5 +1,5 @@
 #include "all.h"
-
+#include "Stack.h"
 //递归实现
 
 int Partition(RcdType rcd[], int low, int high)
@@ -141,33 +141,34 @@ void QuickSortTime(RcdSqList& L) {
 
 
     count3 = 0;
-    int high = L.length, low = 1;
-    int* stack = new int[L.length + 1];
-    int top = -1;
 
+    int low = 1;
+    int high = L.length;
+    SqStack stack;
+    InitStack_Sq(stack, L.length + 1, INCREMENT);
 
-    stack[++top] = low;
-    stack[++top] = high;
+    // Push initial values of low and high to the stack
+    Push_Sq(stack, low);
+    Push_Sq(stack, high);
 
+    while (StackEmpty_Sq(stack) == FALSE) {
+        // Pop high and low
+        Pop_Sq(stack, high);
+        Pop_Sq(stack, low);
 
-    while (top >= 0) {
-
-        high = stack[top--];
-        low = stack[top--];
-
-
+        // Partition the array, get pivot index
         int pivotIndex = PartitionTime(L.rcd, low, high);
 
-
+        // If there are elements on the left side of the pivot, push them to the stack
         if (pivotIndex - 1 > low) {
-            stack[++top] = low;
-            stack[++top] = pivotIndex - 1;
+            Push_Sq(stack, low);
+            Push_Sq(stack, pivotIndex - 1);
         }
 
-
+        // If there are elements on the right side of the pivot, push them to the stack
         if (pivotIndex + 1 < high) {
-            stack[++top] = pivotIndex + 1;
-            stack[++top] = high;
+            Push_Sq(stack, pivotIndex + 1);
+            Push_Sq(stack, high);
         }
     }
 
